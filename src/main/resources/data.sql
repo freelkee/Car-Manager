@@ -3,12 +3,12 @@ VALUES (25000, 2022, 200),
        (18000, 2021, 180),
        (30000, 2023, 250);
 
-INSERT INTO car_sellers (name)
+INSERT INTO sellers (name)
 VALUES ('AutoWorld Dealers'),
        ('City Cars'),
        ('CarZone Express');
 
-INSERT INTO availability (car_seller_id, car_id)
+INSERT INTO availability (seller_id, car_id)
 VALUES (1, 1),
        (1, 2),
        (1, 3),
