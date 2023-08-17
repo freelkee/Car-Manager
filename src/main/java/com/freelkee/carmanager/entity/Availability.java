@@ -16,7 +16,7 @@ public class Availability {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
-    @JoinColumn(name = "car_seller_id")
+    @JoinColumn(name = "seller_id")
     private Seller seller;
     @ManyToOne
     @JoinColumn(name = "car_id")
