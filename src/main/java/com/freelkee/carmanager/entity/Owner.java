@@ -14,7 +14,7 @@ public class Owner {
     @Column(name="id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "price")
+    @Column(name = "name")
     private String name;
     @ManyToOne
     @JoinColumn(name = "car_id")

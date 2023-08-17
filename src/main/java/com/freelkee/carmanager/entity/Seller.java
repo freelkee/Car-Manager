@@ -7,16 +7,16 @@ import lombok.Setter;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "car_sellers")
+@Table(name = "sellers")
 @NoArgsConstructor
 @Getter
 @Setter
-public class CarSeller {
+public class Seller {
     @Id
     @Column(name="id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "name")
-    private int name;
+    private String name;
 
 }
