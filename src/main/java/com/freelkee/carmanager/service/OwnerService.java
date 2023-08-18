@@ -1,11 +1,12 @@
 package com.freelkee.carmanager.service;
 
-import com.freelkee.carmanager.entity.Owner;
 import com.freelkee.carmanager.repository.OwnerRepository;
+import com.freelkee.carmanager.response.OwnerResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class OwnerService{
@@ -16,7 +17,7 @@ public class OwnerService{
         this.ownerRepository = ownerRepository;
     }
 
-    public List<Owner> getOwners() {
-        return ownerRepository.findAll();
+    public List<OwnerResponse> getOwners() {
+        return ownerRepository.findAll().stream().map(OwnerResponse::of).collect(Collectors.toList());
     }
 }

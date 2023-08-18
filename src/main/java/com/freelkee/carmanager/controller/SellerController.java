@@ -26,8 +26,6 @@ public class SellerController {
     public String getSeller(@PathVariable final Long id, Model model){
         model.addAttribute("seller", sellerService.getSeller(id));
         model.addAttribute("cars", sellerService.getCars(id));
-
         return "seller";
-
     }
 }

@@ -5,7 +5,7 @@
   <title>Owners</title>
 </head>
 <body>
-<div th:replace="~{header.html}"></div>
+<div th:replace="~{optional/header.html}"></div>
 <h2>List of owners:</h2>
 <table style="border-collapse: collapse; width: 100%;">
   <thead>
@@ -20,13 +20,12 @@
     <td style="border: 1px solid #dddddd; padding: 8px;"> <span th:text="${owner.getId()}"></span></td>
     <td style="border: 1px solid #dddddd; padding: 8px;"> <span th:text="${owner.getName()}"></span></td>
     <td style="border: 1px solid #dddddd; padding: 8px;">
-      <a th:if="${owner.getCar() != null}" th:href="@{/car/{id}(id=${owner.getCar().getId()})}">
-        <span th:text="${owner.getCar().getId()}"></span>
+      <a th:if="${owner.getCarId() != null}" th:href="@{/car/{id}(id=${owner.getCarId()})}">
+        <span th:text="${owner.getCarId()}"></span>
       </a>
     </td>
   </tr>
   </tbody>
 </table>
-
 </body>
 </html>

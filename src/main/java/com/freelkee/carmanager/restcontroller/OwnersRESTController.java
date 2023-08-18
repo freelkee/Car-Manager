@@ -1,5 +1,5 @@
 package com.freelkee.carmanager.restcontroller;
-import com.freelkee.carmanager.entity.Owner;
+import com.freelkee.carmanager.response.OwnerResponse;
 import com.freelkee.carmanager.service.OwnerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,7 +18,7 @@ public class OwnersRESTController {
     }
 
     @GetMapping
-    public List<Owner> getOwners(){
+    public List<OwnerResponse> getOwners(){
         return ownerService.getOwners();
     }
 }
