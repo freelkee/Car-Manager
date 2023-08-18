@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class SellerService {
@@ -29,10 +30,20 @@ public class SellerService {
     }
 
     public List<Car> getCars(Long id) {
-        Seller seller = sellerRepository.findById(id).get();
-        List<Car> cars = new ArrayList<>();
-        List<Availability> availability = availabilityRepository.findAllBySeller(seller);
-        availability.forEach(a -> cars.add(a.getCar()));
-        return cars;
+        Optional<Seller> sellerOptional = sellerRepository.findById(id);
+        if (sellerOptional.isPresent()) {
+            List<Car> cars = new ArrayList<>();
+            List<Availability> availability = availabilityRepository.findAllBySeller(sellerOptional.get());
+            availability.forEach(a -> cars.add(a.getCar()));
+            return cars;
+        } else throw new RuntimeException("Seller does not exist");
+    }
+
+    public Seller getSeller(Long id) {
+        Optional<Seller> sellerOptional = sellerRepository.findById(id);
+        if (sellerOptional.isPresent())
+            return sellerOptional.get();
+        else throw new RuntimeException("Seller does not exist");
+
     }
 }

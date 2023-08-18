@@ -2,14 +2,13 @@ package com.freelkee.carmanager.controller;
 import com.freelkee.carmanager.entity.Owner;
 import com.freelkee.carmanager.service.OwnerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@RestController
-@RequestMapping("/api/v1/owner")
+@Controller
 public class OwnersController {
     private final OwnerService ownerService;
     @Autowired
@@ -17,8 +16,10 @@ public class OwnersController {
         this.ownerService = ownerService;
     }
 
-    @GetMapping
-    public List<Owner> getOwners(){
-        return ownerService.getOwners();
+    @GetMapping("/owners")
+    public String getOwners(Model model){
+        List<Owner> owners = ownerService.getOwners();
+        model.addAttribute("owners", owners);
+        return "owners";
     }
 }

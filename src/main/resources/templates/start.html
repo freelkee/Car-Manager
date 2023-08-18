@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Car Manager</title>
+</head>
+
+<body>
+<div th:replace="~{header.html}"></div>
+<h1>Chose action:</h1>
+
+<div>
+    <a th:href="@{/sellers}">
+        <button>Sellers</button>
+    </a>
+</div>
+
+<div>
+    <a th:href="@{/cars}">
+        <button>Cars</button>
+    </a>
+</div>
+
+<div>
+    <a th:href="@{/owners}">
+        <button>Owners</button>
+    </a>
+</div>
+</body>
+
+</html>

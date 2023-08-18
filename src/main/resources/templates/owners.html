@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Owners</title>
+</head>
+<body>
+<div th:replace="~{header.html}"></div>
+<h2>List of owners:</h2>
+<table style="border-collapse: collapse; width: 100%;">
+  <thead>
+  <tr style="background-color: #dddddd;">
+    <th style="border: 1px solid #dddddd; padding: 8px; text-align: left;">Id</th>
+    <th style="border: 1px solid #dddddd; padding: 8px; text-align: left;">Name</th>
+    <th style="border: 1px solid #dddddd; padding: 8px; text-align: left;">Car</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="owner : ${owners}" style="border: 1px solid #dddddd;">
+    <td style="border: 1px solid #dddddd; padding: 8px;"> <span th:text="${owner.getId()}"></span></td>
+    <td style="border: 1px solid #dddddd; padding: 8px;"> <span th:text="${owner.getName()}"></span></td>
+    <td style="border: 1px solid #dddddd; padding: 8px;">
+      <a th:if="${owner.getCar() != null}" th:href="@{/car/{id}(id=${owner.getCar().getId()})}">
+        <span th:text="${owner.getCar().getId()}"></span>
+      </a>
+    </td>
+  </tr>
+  </tbody>
+</table>
+
+</body>
+</html>

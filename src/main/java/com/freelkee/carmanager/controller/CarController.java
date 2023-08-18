@@ -5,15 +5,14 @@ import com.freelkee.carmanager.entity.Owner;
 import com.freelkee.carmanager.entity.Seller;
 import com.freelkee.carmanager.service.CarService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@RestController
-@RequestMapping("/api/v1/car")
+@Controller
 public class CarController {
     private final CarService carService;
 
@@ -22,18 +21,22 @@ public class CarController {
         this.carService = carService;
     }
 
-    @GetMapping
-    public List<Car> getCars() {
-        return carService.getCars();
+    @GetMapping("/cars")
+    public String getCars(Model model) {
+        List<Car> cars = carService.getCars();
+        model.addAttribute("cars", cars);
+        return "cars";
     }
 
-    @GetMapping("/{id}/seller")
-    public List<Seller> getSellers(@PathVariable final Long id){
-        return carService.getSellers(id);
-    }
-    @GetMapping("/{id}/owner")
-    public List<Owner> getOwners(@PathVariable final Long id){
-        return carService.getOwners(id);
+    @GetMapping("/car/{id}")
+    public String getSellers(@PathVariable final Long id, Model model){
+        List<Seller> sellers = carService.getSellers(id);
+        List<Owner> owners = carService.getOwners(id);
+
+        model.addAttribute("sellers", sellers)
+                .addAttribute("owners", owners)
+                .addAttribute("id", id);
+        return "car";
     }
 
 }
