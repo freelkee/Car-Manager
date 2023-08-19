@@ -9,10 +9,12 @@ public class MainController {
     public String showStartPage() {
         return "start";
     }
+
     @GetMapping("/info")
     public String showInfoPage() {
         return "optional/info";
     }
+
     @GetMapping("/contacts")
     public String showContactsPage() {
         return "optional/contacts";

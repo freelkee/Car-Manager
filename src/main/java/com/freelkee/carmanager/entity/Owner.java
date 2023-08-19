@@ -10,12 +10,15 @@ import javax.persistence.*;
 @Getter
 @Setter
 public class Owner {
+
     @Id
-    @Column(name="id")
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(name = "name")
     private String name;
+
     @ManyToOne
     @JoinColumn(name = "car_id")
     private Car car;

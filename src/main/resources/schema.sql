@@ -17,11 +17,11 @@ CREATE TABLE IF NOT EXISTS sellers
 );
 CREATE TABLE IF NOT EXISTS availability
 (
-    id           serial PRIMARY KEY,
     seller_id integer,
-    car_id        integer,
+    car_id integer,
     FOREIGN KEY (seller_id) REFERENCES sellers (id),
-    FOREIGN KEY (car_id) REFERENCES cars (id)
+    FOREIGN KEY (car_id) REFERENCES cars (id),
+    CONSTRAINT unique_seller_car_pair UNIQUE (seller_id, car_id)
 );
 CREATE TABLE IF NOT EXISTS owners
 (

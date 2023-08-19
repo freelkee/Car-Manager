@@ -4,7 +4,6 @@ import com.freelkee.carmanager.entity.Car;
 import com.freelkee.carmanager.entity.Owner;
 import com.freelkee.carmanager.entity.Seller;
 import com.freelkee.carmanager.service.CarService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,7 +16,6 @@ import java.util.List;
 public class CarRESTController {
     private final CarService carService;
 
-    @Autowired
     public CarRESTController(CarService carService) {
         this.carService = carService;
     }
