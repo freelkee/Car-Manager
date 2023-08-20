@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Car</title>
+</head>
+<body>
+<div th:replace="~{optional/header.html}"></div>
+<h2>Car <span th:text="${id}"></span></h2>
+<h2>List of Sellers</h2>
+<table style="border-collapse: collapse; width: 100%;">
+    <thead>
+    <tr style="background-color: #dddddd;">
+        <th style="border: 1px solid #dddddd; padding: 8px; text-align: left;">Id</th>
+        <th style="border: 1px solid #dddddd; padding: 8px; text-align: left;">Name</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="seller : ${sellers}" style="border: 1px solid #dddddd;">
+        <td style="border: 1px solid #dddddd; padding: 8px;">
+            <a th:href="@{/seller/{id}(id=${seller.getId()})}">
+                <span th:text="${seller.getId()}"></span>
+            </a>
+        </td>
+        <td style="border: 1px solid #dddddd; padding: 8px;"> <span th:text="${seller.getName()}"></span></td>
+    </tr>
+    </tbody>
+</table>
+<h2>List of owners:</h2>
+<table style="border-collapse: collapse; width: 100%;">
+    <thead>
+    <tr style="background-color: #dddddd;">
+        <th style="border: 1px solid #dddddd; padding: 8px; text-align: left;">Id</th>
+        <th style="border: 1px solid #dddddd; padding: 8px; text-align: left;">Name</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="owner : ${owners}" style="border: 1px solid #dddddd;">
+        <td style="border: 1px solid #dddddd; padding: 8px;"> <span th:text="${owner.getId()}"></span></td>
+        <td style="border: 1px solid #dddddd; padding: 8px;"> <span th:text="${owner.getName()}"></span></td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
