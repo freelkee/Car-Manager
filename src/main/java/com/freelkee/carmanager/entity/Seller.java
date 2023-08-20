@@ -24,9 +24,9 @@ public class Seller {
 
     @ManyToMany
     @JoinTable(
-            name = "availability",
-            joinColumns = @JoinColumn(name = "sellers"),
-            inverseJoinColumns = @JoinColumn(name = "cars"))
+        name = "sellers_to_cars",
+        joinColumns = @JoinColumn(name = "seller_id"),
+        inverseJoinColumns = @JoinColumn(name = "car_id"))
     private Set<Car> cars;
 
 

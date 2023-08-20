@@ -13,7 +13,7 @@ import java.util.List;
 public class OwnersRESTController {
     private final OwnerService ownerService;
 
-    public OwnersRESTController(OwnerService ownerService) {
+    public OwnersRESTController(final OwnerService ownerService) {
         this.ownerService = ownerService;
     }
 

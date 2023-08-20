@@ -1,7 +1,8 @@
-DROP TABLE IF EXISTS availability;
+DROP TABLE IF EXISTS sellers_to_cars;
 DROP TABLE IF EXISTS owners;
 DROP TABLE IF EXISTS cars;
 DROP TABLE IF EXISTS sellers;
+
 CREATE TABLE IF NOT EXISTS cars
 (
     id           serial PRIMARY KEY,
@@ -15,7 +16,7 @@ CREATE TABLE IF NOT EXISTS sellers
     id   serial PRIMARY KEY,
     name varchar(100)
 );
-CREATE TABLE IF NOT EXISTS availability
+CREATE TABLE IF NOT EXISTS sellers_to_cars
 (
     seller_id integer,
     car_id integer,

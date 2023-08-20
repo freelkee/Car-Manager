@@ -30,9 +30,12 @@ public class Car {
 
     @ManyToMany
     @JoinTable(
-            name = "availability",
-            joinColumns = @JoinColumn(name = "cars"),
-            inverseJoinColumns = @JoinColumn(name = "sellers"))
+        name = "sellers_to_cars",
+        joinColumns = @JoinColumn(name = "car_id"),
+        inverseJoinColumns = @JoinColumn(name = "seller_id"))
     private Set<Seller> sellers;
 
+    @OneToMany
+    @JoinColumn(name = "car_id")
+    private Set<Owner> owners;
 }

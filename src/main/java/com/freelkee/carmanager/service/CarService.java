@@ -1,44 +1,36 @@
 package com.freelkee.carmanager.service;
 
-import com.freelkee.carmanager.entity.Car;
 import com.freelkee.carmanager.entity.Seller;
 import com.freelkee.carmanager.entity.Owner;
 import com.freelkee.carmanager.repository.CarRepository;
-import com.freelkee.carmanager.repository.OwnerRepository;
-import com.freelkee.carmanager.repository.SellerRepository;
+import com.freelkee.carmanager.response.CarResponse;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class CarService {
 
     private final CarRepository carRepository;
 
-    private final OwnerRepository ownerRepository;
-
-    private final SellerRepository sellerRepository;
-
-    public CarService(
-            final CarRepository carRepository,
-            final OwnerRepository ownerRepository,
-            final SellerRepository sellerRepository
-    ) {
+    public CarService(final CarRepository carRepository) {
         this.carRepository = carRepository;
-        this.ownerRepository = ownerRepository;
-        this.sellerRepository = sellerRepository;
     }
 
-    public List<Car> getCars() {
-        return carRepository.findAll();
+    public List<CarResponse> getCars() {
+        return carRepository.findAll().stream()
+            .map(CarResponse::of)
+            .collect(Collectors.toList());
     }
 
-    public List<Owner> getOwners(final Long id) {
-        return ownerRepository.findAllByCarId(id);
+    public Set<Owner> getOwners(final Long carId) {
+        return carRepository.getReferenceById(carId).getOwners();
     }
 
-    public List<Seller> getSellers(final Long id) {
-        return sellerRepository.findAllByCar(id);
+    public Set<Seller> getSellers(final Long carId) {
+        return carRepository.getReferenceById(carId).getSellers();
 
     }
 }

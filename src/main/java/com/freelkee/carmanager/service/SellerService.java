@@ -1,38 +1,38 @@
 package com.freelkee.carmanager.service;
 
-import com.freelkee.carmanager.entity.Car;
-import com.freelkee.carmanager.entity.Seller;
-import com.freelkee.carmanager.repository.CarRepository;
 import com.freelkee.carmanager.repository.SellerRepository;
+import com.freelkee.carmanager.response.CarResponse;
+import com.freelkee.carmanager.response.SellerResponse;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class SellerService {
 
-    private final CarRepository carRepository;
     private final SellerRepository sellerRepository;
 
 
-    public SellerService(
-            final CarRepository carRepository,
-            final SellerRepository sellerRepository
-    ) {
-        this.carRepository = carRepository;
+    public SellerService(final SellerRepository sellerRepository){
         this.sellerRepository = sellerRepository;
     }
 
-    public List<Seller> getSellers() {
-        return sellerRepository.findAll();
+    public List<SellerResponse> getSellers() {
+        return sellerRepository.findAll().stream()
+            .map(SellerResponse::of)
+            .collect(Collectors.toList());
     }
 
-    public List<Car> getCars(final Long id) {
-        return carRepository.findAllBySeller(id);
+    public List<CarResponse> getCars(final Long sellerId) {
+        return sellerRepository.getReferenceById(sellerId).getCars()
+            .stream()
+            .map(CarResponse::of)
+            .collect(Collectors.toList());
     }
 
-    public Seller getSeller(final Long id) {
-        return sellerRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException(String.format("Seller %d does not exist", id)));
+    public SellerResponse getSeller(final Long id) {
+        return SellerResponse.of(sellerRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException(String.format("Seller %d does not exist", id))));
     }
 }

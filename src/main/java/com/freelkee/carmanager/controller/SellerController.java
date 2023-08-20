@@ -27,7 +27,7 @@ public class SellerController {
     @GetMapping("/{id}")
     public String getSeller(@PathVariable final Long id, final Model model) {
         model.addAttribute("seller", sellerService.getSeller(id))
-                .addAttribute("cars", sellerService.getCars(id));
+            .addAttribute("cars", sellerService.getCars(id));
         return "seller";
     }
 }

@@ -12,14 +12,14 @@ public class OwnerService {
 
     private final OwnerRepository ownerRepository;
 
-    public OwnerService(OwnerRepository ownerRepository) {
+    public OwnerService(final OwnerRepository ownerRepository) {
         this.ownerRepository = ownerRepository;
     }
 
     public List<OwnerResponse> getOwners() {
         return ownerRepository.findAll()
-                .stream()
-                .map(OwnerResponse::of)
-                .collect(Collectors.toList());
+            .stream()
+            .map(OwnerResponse::of)
+            .collect(Collectors.toList());
     }
 }

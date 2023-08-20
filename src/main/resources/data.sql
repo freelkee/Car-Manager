@@ -12,7 +12,7 @@ VALUES ('AutoWorld Dealers'),
        ('TopCar Sales'),
        ('Elite Motors');
 
-INSERT INTO availability (seller_id, car_id)
+INSERT INTO sellers_to_cars (seller_id, car_id)
 VALUES (1, 1),
        (1, 2),
        (1, 3),

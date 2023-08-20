@@ -1,7 +1,7 @@
 package com.freelkee.carmanager.restcontroller;
 
-import com.freelkee.carmanager.entity.Car;
-import com.freelkee.carmanager.entity.Seller;
+import com.freelkee.carmanager.response.CarResponse;
+import com.freelkee.carmanager.response.SellerResponse;
 import com.freelkee.carmanager.service.SellerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,12 +18,12 @@ public class SellerRESTController {
     private final SellerService sellerService;
 
     @GetMapping
-    public List<Seller> getSellers() {
+    public List<SellerResponse> getSellers() {
         return sellerService.getSellers();
     }
 
     @GetMapping("/{id}")
-    public List<Car> getCars(@PathVariable final Long id) {
+    public List<CarResponse> getCars(@PathVariable final Long id) {
         return sellerService.getCars(id);
     }
 }
