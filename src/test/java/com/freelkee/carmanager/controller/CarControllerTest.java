@@ -34,8 +34,6 @@ public class CarControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-
-
     @Test
     public void showAllCars() throws Exception {
         Car car1 = new Car();
@@ -68,7 +66,6 @@ public class CarControllerTest {
         assertEquals(CarResponse.of(car1), returnedCars.get(0));
         assertEquals(CarResponse.of(car2), returnedCars.get(1));
 
-
     }
 
     @Test
@@ -97,7 +94,7 @@ public class CarControllerTest {
         car.setSellers(Set.of(seller1,seller2));
         car.setOwners(Set.of(owner1,owner2));
 
-        Mockito.when(carRepository.getReferenceById(Mockito.any())).thenReturn(car);
+        Mockito.when(carRepository.getReferenceById(car.getId())).thenReturn(car);
 
         mockMvc.perform(get("/car/" + car.getId()))
             .andExpect(status().isOk())
@@ -105,7 +102,6 @@ public class CarControllerTest {
             .andExpect(model().attributeExists("sellers", "owners", "id"))
             .andExpect(model().attribute("sellers", car.getSellers()))
             .andExpect(model().attribute("owners", car.getOwners()))
-            .andExpect(model().attribute("id", car.getId()))
-            .andReturn();
+            .andExpect(model().attribute("id", car.getId()));
     }
 }
