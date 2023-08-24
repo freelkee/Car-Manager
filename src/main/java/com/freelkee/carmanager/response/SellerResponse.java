@@ -2,6 +2,7 @@ package com.freelkee.carmanager.response;
 
 import com.freelkee.carmanager.entity.Seller;
 import lombok.*;
+
 @Setter
 @Getter
 @Builder

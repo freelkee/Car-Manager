@@ -38,4 +38,6 @@ public class Car {
     @OneToMany
     @JoinColumn(name = "car_id")
     private Set<Owner> owners;
+
+
 }
