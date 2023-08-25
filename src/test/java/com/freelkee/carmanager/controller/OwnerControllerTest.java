@@ -5,71 +5,82 @@ import com.freelkee.carmanager.entity.Owner;
 import com.freelkee.carmanager.repository.OwnerRepository;
 import com.freelkee.carmanager.response.OwnerResponse;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.ui.ModelMap;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@TestPropertySource(locations = "classpath:application-test.properties")
 public class OwnerControllerTest {
 
-    @MockBean
-    private OwnerRepository ownerRepository;
+    private final OwnerRepository ownerRepository;
+
+    private final MockMvc mockMvc;
 
     @Autowired
-    private MockMvc mockMvc;
+    public OwnerControllerTest(OwnerRepository ownerRepository, MockMvc mockMvc) {
+        this.ownerRepository = ownerRepository;
+        this.mockMvc = mockMvc;
+    }
 
     @Test
     public void showAllOwners() throws Exception {
-        Owner owner1 = new Owner();
-        owner1.setId(1L);
+        var owner1 = new Owner();
         owner1.setName("Jack");
 
-        Owner owner2 = new Owner();
-        owner2.setId(2L);
+        var owner2 = new Owner();
         owner2.setName("Piter");
 
-        Car car = new Car();
-        car.setId(1L);
+        var owners = Set.of(owner1,owner2);
+
+        var car = new Car();
         car.setPrice(25000);
         car.setYear(2022);
         car.setEnginePower(200);
-        car.setOwners(Set.of(owner1, owner2));
+        car.setOwners(owners);
 
         owner1.setCar(car);
         owner2.setCar(car);
 
-        List<Owner> owners = List.of(owner1,owner2);
+        ownerRepository.save(owner1);
+        ownerRepository.save(owner2);
 
-        Mockito.when(ownerRepository.findAll()).thenReturn(owners);
+        var sortedOwners = owners.stream()
+            .sorted((o1, o2) -> Math.toIntExact(o1.getId() - o2.getId()))
+            .collect(Collectors.toList());
 
-        MvcResult result = mockMvc.perform(get("/owner"))
+        var result = mockMvc.perform(get("/owner"))
             .andExpect(status().isOk())
             .andExpect(view().name("owners"))
             .andExpect(model().attributeExists("owners"))
             .andReturn();
 
-        ModelMap modelMap = Objects.requireNonNull(result.getModelAndView()).getModelMap();
-        List<OwnerResponse> returnedOwners = (List<OwnerResponse>) modelMap.get("owners");
-        assertNotNull(returnedOwners);
-        assertEquals(owners.size(), returnedOwners.size());
+        var modelMap = Objects.requireNonNull(result.getModelAndView()).getModelMap();
+        var sortedOwnersResponses = ((List<OwnerResponse>) modelMap.get("owners")).stream()
+            .sorted((o1, o2) -> Math.toIntExact(o1.getId() - o2.getId()))
+            .collect(Collectors.toList());
 
-        assertEquals(OwnerResponse.of(owner1), returnedOwners.get(0));
-        assertEquals(OwnerResponse.of(owner2), returnedOwners.get(1));
+        assertEquals(owners.size(), sortedOwnersResponses.size());
+
+        assertEquals(sortedOwners.get(0).getId(), sortedOwnersResponses.get(0).getId());
+        assertEquals(sortedOwners.get(0).getName(), sortedOwnersResponses.get(0).getName());
+        assertEquals(sortedOwners.get(0).getCar().getId(), sortedOwnersResponses.get(0).getCarId());
+
+        assertEquals(sortedOwners.get(1).getId(), sortedOwnersResponses.get(1).getId());
+        assertEquals(sortedOwners.get(1).getName(), sortedOwnersResponses.get(1).getName());
+        assertEquals(sortedOwners.get(1).getCar().getId(), sortedOwnersResponses.get(1).getCarId());
 
     }
 }

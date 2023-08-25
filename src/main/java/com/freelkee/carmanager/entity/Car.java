@@ -28,14 +28,14 @@ public class Car {
     @Column(name = "engine_power")
     private int enginePower;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
         name = "sellers_to_cars",
         joinColumns = @JoinColumn(name = "car_id"),
         inverseJoinColumns = @JoinColumn(name = "seller_id"))
     private Set<Seller> sellers;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "car_id")
     private Set<Owner> owners;
 
