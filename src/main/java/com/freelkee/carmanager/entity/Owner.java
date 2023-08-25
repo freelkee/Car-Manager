@@ -7,6 +7,8 @@ import javax.persistence.*;
 @Entity
 @Table(name = "owners")
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Getter
 @Setter
 public class Owner {
@@ -19,8 +21,9 @@ public class Owner {
     @Column(name = "name")
     private String name;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "car_id")
     private Car car;
+
 
 }

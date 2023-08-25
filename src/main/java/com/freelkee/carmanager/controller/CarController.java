@@ -24,7 +24,7 @@ public class CarController {
     }
 
     @GetMapping("/{id}")
-    public String getSellers(@PathVariable final Long id, final Model model) {
+    public String getSellersAndOwners(@PathVariable final Long id, final Model model) {
         model.addAttribute("sellers", carService.getSellers(id))
             .addAttribute("owners", carService.getOwners(id))
             .addAttribute("id", id);

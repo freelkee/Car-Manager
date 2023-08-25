@@ -2,6 +2,9 @@ package com.freelkee.carmanager.response;
 
 import com.freelkee.carmanager.entity.Car;
 import lombok.*;
+
+import java.util.Objects;
+
 @Setter
 @Getter
 @Builder
@@ -25,4 +28,24 @@ public class CarResponse {
             .build();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        CarResponse carResponse = (CarResponse) o;
+        return
+            price == carResponse.getPrice() &&
+                year == carResponse.getYear() &&
+                enginePower == carResponse.getEnginePower() &&
+                Objects.equals(id, carResponse.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, price, year, enginePower);
+    }
 }
