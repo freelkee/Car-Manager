@@ -7,6 +7,8 @@ import javax.persistence.*;
 @Entity
 @Table(name = "owners")
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Getter
 @Setter
 public class Owner {

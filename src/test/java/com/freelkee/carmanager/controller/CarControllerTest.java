@@ -10,7 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultMatcher;
+import org.springframework.ui.ModelMap;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -24,48 +27,37 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @TestPropertySource(locations = "classpath:application-test.properties")
+@Sql(scripts = "/schema-test.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 public class CarControllerTest {
 
-    private final CarRepository carRepository;
-
-    private final MockMvc mockMvc;
+    @Autowired
+    private CarRepository carRepository;
 
     @Autowired
-    public CarControllerTest(CarRepository carRepository, MockMvc mockMvc) {
-        this.carRepository = carRepository;
-        this.mockMvc = mockMvc;
-    }
+    private MockMvc mockMvc;
 
     @Test
     public void showAllCars() throws Exception {
-        var car1 = new Car();
-        car1.setPrice(25000);
-        car1.setYear(2022);
-        car1.setEnginePower(200);
+        final var car1 = Car.builder()
+            .price(25000)
+            .year(2022)
+            .enginePower(200)
+            .build();
 
-        var car2 = new Car();
-        car2.setPrice(18000);
-        car2.setYear(2021);
-        car2.setEnginePower(180);
+        final var car2 = Car.builder()
+            .price(18000)
+            .year(2021)
+            .enginePower(180)
+            .build();
 
         carRepository.save(car1);
         carRepository.save(car2);
 
-        var sortedCars = Stream.of(car1, car2)
+        final var sortedCars = Stream.of(car1, car2)
             .sorted((c1, c2) -> Math.toIntExact(c1.getId() - c2.getId()))
             .collect(Collectors.toList());
 
-        var result = mockMvc.perform(get("/car"))
-            .andExpect(status().isOk())
-            .andExpect(view().name("cars"))
-            .andExpect(model().attributeExists("cars"))
-            .andReturn();
-
-        var modelMap = Objects.requireNonNull(result.getModelAndView()).getModelMap();
-
-        var sortedCarsResponses = ((List<CarResponse>) modelMap.get("cars")).stream()
-            .sorted((c1, c2) -> Math.toIntExact(c1.getId() - c2.getId()))
-            .collect(Collectors.toList());
+        final List<CarResponse> sortedCarsResponses = getCarResponses();
 
         assertNotNull(sortedCarsResponses);
         assertEquals(sortedCars.size(), sortedCarsResponses.size());
@@ -82,75 +74,104 @@ public class CarControllerTest {
 
     }
 
+    private List<CarResponse> getCarResponses() throws Exception {
+        final ModelMap modelMap = getModelMap("/car", "cars", model().attributeExists("cars"));
+
+        return ((List<CarResponse>) modelMap.get("cars")).stream()
+            .sorted((c1, c2) -> Math.toIntExact(c1.getId() - c2.getId()))
+            .collect(Collectors.toList());
+    }
+
     @Test
     public void showSellersAndOwners() throws Exception {
-        var seller1 = new Seller();
-        seller1.setName("Big Shop");
+        final var seller1 = Seller.builder()
+            .name("Big Shop")
+            .build();
 
-        var seller2 = new Seller();
-        seller2.setName("Small Shop");
+        final var seller2 = Seller.builder()
+            .name("Small Shop")
+            .build();
 
-        var sellers = List.of(seller1, seller2);
+        final var sellers = List.of(seller1, seller2);
 
-        var owner1 = new Owner();
-        owner1.setName("Jack");
+        final var owner1 = Owner.builder()
+            .name("Jack")
+            .build();
 
-        var owner2 = new Owner();
-        owner2.setName("Piter");
+        final var owner2 = Owner.builder()
+            .name("Piter")
+            .build();
 
-        var owners = List.of(owner1, owner2);
+        final var owners = List.of(owner1, owner2);
 
-        var car = new Car();
-        car.setPrice(25000);
-        car.setYear(2022);
-        car.setEnginePower(200);
-        car.setSellers(Set.of(seller1, seller2));
-        car.setOwners(Set.of(owner1, owner2));
+        final var car = Car.builder()
+            .price(25000)
+            .year(2022)
+            .enginePower(200)
+            .sellers(Set.of(seller1, seller2))
+            .owners(Set.of(owner1, owner2))
+            .build();
 
         carRepository.save(car);
 
-        var sortedSellers = sellers.stream()
+        final var sortedSellers = sellers.stream()
             .sorted((s1, s2) -> Math.toIntExact(s1.getId() - s2.getId()))
             .collect(Collectors.toList());
 
-        var sortedOwners = owners.stream()
+        final var sortedOwners = owners.stream()
             .sorted((o1, o2) -> Math.toIntExact(o1.getId() - o2.getId()))
             .collect(Collectors.toList());
 
-        var result = mockMvc.perform(get("/car/" + car.getId()))
-            .andExpect(status().isOk())
-            .andExpect(view().name("car"))
-            .andExpect(model().attributeExists("sellers", "owners", "id"))
-            .andReturn();
+        final ModelMap modelMap = getModelMap(
+            "/car/" + car.getId(),
+            "car",
+            model().attributeExists("sellers", "owners", "id")
+        );
 
-        var modelMap = Objects.requireNonNull(result.getModelAndView()).getModelMap();
-
-        var sortedSellersResponses = ((Set<Seller>) modelMap.get("sellers")).stream()
+        final var sortedSellersResponses = ((Set<Seller>) modelMap.get("sellers")).stream()
             .sorted((s1, s2) -> Math.toIntExact(s1.getId() - s2.getId()))
             .collect(Collectors.toList());
 
-        assertNotNull(sortedSellersResponses);
-        assertEquals(sellers.size(), sortedSellersResponses.size());
+        assertSellers(sortedSellers, sortedSellersResponses);
 
-        for (int i = 0; i < sellers.size(); i++) {
-            assertEquals(sortedSellers.get(i).getId(), sortedSellersResponses.get(i).getId());
-            assertEquals(sortedSellers.get(i).getName(), sortedSellersResponses.get(i).getName());
-        }
-
-        var sortedOwnersResponses = ((Set<Owner>) modelMap.get("owners")).stream()
+        final var sortedOwnersResponses = ((Set<Owner>) modelMap.get("owners")).stream()
             .sorted((o1, o2) -> Math.toIntExact(o1.getId() - o2.getId()))
             .collect(Collectors.toList());
 
-        assertNotNull(sortedSellersResponses);
-        assertEquals(owners.size(), sortedOwnersResponses.size());
+        assertOwners(sortedOwners, sortedOwnersResponses);
 
-        for (int i = 0; i < owners.size(); i++) {
+        final var returnedCarsId = (Long) modelMap.get("id");
+        assertNotNull(returnedCarsId);
+        assertEquals(car.getId(), returnedCarsId);
+    }
+
+    private static void assertOwners(List<Owner> sortedOwners, List<Owner> sortedOwnersResponses) {
+        assertNotNull(sortedOwnersResponses);
+        assertEquals(sortedOwners.size(), sortedOwnersResponses.size());
+
+        for (int i = 0; i < sortedOwners.size(); i++) {
             assertEquals(sortedOwners.get(i).getId(), sortedOwnersResponses.get(i).getId());
             assertEquals(sortedOwners.get(i).getName(), sortedOwnersResponses.get(i).getName());
         }
+    }
 
-        var returnedCarsId = (Long) modelMap.get("id");
-        assertNotNull(returnedCarsId);
-        assertEquals(car.getId(), returnedCarsId);
+    private static void assertSellers(List<Seller> sortedSellers, List<Seller> sortedSellersResponses) {
+        assertNotNull(sortedSellersResponses);
+        assertEquals(sortedSellers.size(), sortedSellersResponses.size());
+
+        for (int i = 0; i < sortedSellers.size(); i++) {
+            assertEquals(sortedSellers.get(i).getId(), sortedSellersResponses.get(i).getId());
+            assertEquals(sortedSellers.get(i).getName(), sortedSellersResponses.get(i).getName());
+        }
+    }
+
+    private ModelMap getModelMap(String car, String car1, ResultMatcher matcher) throws Exception {
+        final var result = mockMvc.perform(get(car))
+            .andExpect(status().isOk())
+            .andExpect(view().name(car1))
+            .andExpect(matcher)
+            .andReturn();
+
+        return Objects.requireNonNull(result.getModelAndView()).getModelMap();
     }
 }

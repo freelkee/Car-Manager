@@ -1,8 +1,6 @@
 package com.freelkee.carmanager.entity;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -10,6 +8,8 @@ import java.util.Set;
 @Entity
 @Table(name = "cars")
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Getter
 @Setter
 public class Car {
