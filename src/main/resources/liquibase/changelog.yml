@@ -1,0 +1,79 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: DEV-1
+      author: freelkee
+      changes:
+        - createTable:
+            tableName: cars
+            columns:
+              - column:
+                  name: id
+                  type: serial
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: price
+                  type: integer
+              - column:
+                  name: year
+                  type: integer
+              - column:
+                  name: engine_power
+                  type: integer
+        - createTable:
+            tableName: sellers
+            columns:
+              - column:
+                  name: id
+                  type: serial
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(100)
+        - createTable:
+            tableName: sellers_to_cars
+            columns:
+              - column:
+                  name: seller_id
+                  type: integer
+              - column:
+                  name: car_id
+                  type: integer
+            constraints:
+              primaryKey: false
+              nullable: false
+            foreignKeyConstraints:
+              - baseTableName: sellers_to_cars
+                baseColumnNames: seller_id
+                referencedTableName: sellers
+                referencedColumnNames: id
+              - baseTableName: sellers_to_cars
+                baseColumnNames: car_id
+                referencedTableName: cars
+                referencedColumnNames: id
+            uniqueConstraint:
+              - uniqueColumns: seller_id, car_id
+        - createTable:
+            tableName: owners
+            columns:
+              - column:
+                  name: id
+                  type: serial
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(100)
+              - column:
+                  name: car_id
+                  type: integer
+            foreignKeyConstraints:
+              - baseTableName: owners
+                baseColumnNames: car_id
+                referencedTableName: cars
+                referencedColumnNames: id
