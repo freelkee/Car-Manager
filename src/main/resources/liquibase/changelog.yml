@@ -1,7 +1,7 @@
 databaseChangeLog:
 
   - changeSet:
-      id: DEV-1
+      id: createTable
       author: freelkee
       changes:
         - createTable:
@@ -77,3 +77,16 @@ databaseChangeLog:
                 baseColumnNames: car_id
                 referencedTableName: cars
                 referencedColumnNames: id
+
+  - changeSet:
+      id: insertData
+      author: freelkee
+      changes:
+        - sqlFile:
+            dbms: postgres
+            encoding: utf8
+            endDelimiter: \n/\s*\n|\n/\s*$
+            path: classpath:data.sql
+            relativeToChangelogFile: true
+            splitStatements: true
+            stripComments: true
