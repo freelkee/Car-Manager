@@ -1,0 +1,24 @@
+databaseChangeLog:
+    - changeSet:
+          id: createTable
+          author: freelkee
+          changes:
+              - sqlFile:
+                    dbms: postgresql
+                    encoding: utf8
+                    path: classpath:schema.sql
+                    relativeToChangelogFile: true
+                    splitStatements: true
+                    stripComments: true
+
+    - changeSet:
+          id: insertData
+          author: freelkee
+          changes:
+              - sqlFile:
+                    dbms: postgresql
+                    encoding: utf8
+                    path: classpath:data.sql
+                    relativeToChangelogFile: true
+                    splitStatements: true
+                    stripComments: true

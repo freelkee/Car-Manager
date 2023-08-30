@@ -26,7 +26,10 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 
-    implementation group: 'org.postgresql', name: 'postgresql', version: '42.6.0'
+    implementation('org.liquibase:liquibase-core')
+    runtimeOnly('org.postgresql:postgresql')
+
+    //implementation group: 'org.postgresql', name: 'postgresql', version: '42.6.0'
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.2'
     testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.9.2'
