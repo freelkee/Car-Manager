@@ -6,10 +6,8 @@ databaseChangeLog:
               - sqlFile:
                     dbms: postgresql
                     encoding: utf8
-                    path: classpath:schema.sql
+                    path: changelog/scripts/schema.sql
                     relativeToChangelogFile: true
-                    splitStatements: true
-                    stripComments: true
 
     - changeSet:
           id: insertData
@@ -18,7 +16,5 @@ databaseChangeLog:
               - sqlFile:
                     dbms: postgresql
                     encoding: utf8
-                    path: classpath:data.sql
+                    path: changelog/scripts/data.sql
                     relativeToChangelogFile: true
-                    splitStatements: true
-                    stripComments: true
