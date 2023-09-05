@@ -1,17 +1,14 @@
 package com.freelkee.carmanager.controller;
 
+import com.freelkee.carmanager.BaseTestContainersTest;
 import com.freelkee.carmanager.entity.Car;
 import com.freelkee.carmanager.entity.Owner;
 import com.freelkee.carmanager.entity.Seller;
 import com.freelkee.carmanager.repository.CarRepository;
 import com.freelkee.carmanager.response.CarResponse;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.ui.ModelMap;
@@ -27,12 +24,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@Disabled("liquibase implementation")
-@SpringBootTest
 @AutoConfigureMockMvc
-@TestPropertySource(locations = "classpath:application-test.properties")
-@Sql(scripts = "/schema-test.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-public class CarControllerTest {
+public class CarControllerTest extends BaseTestContainersTest {
 
     @Autowired
     private CarRepository carRepository;
