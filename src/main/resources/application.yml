@@ -6,8 +6,9 @@ spring:
     password: 1
 
   liquibase:
-    change-log: classpath:db/db.changelog-master.yaml
-    enabled: false
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+    enabled: true
+
 
   jpa.show-sql: true
 

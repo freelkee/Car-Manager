@@ -26,13 +26,9 @@ public abstract class BaseTestContainersTest {
         registry.add("spring.datasource.username", () -> postgreSQLContainer.getUsername());
         registry.add("spring.datasource.password", () -> postgreSQLContainer.getPassword());
         registry.add("spring.jpa.properties.hibernate.dialect", () -> "org.hibernate.dialect.PostgreSQLDialect");
-        registry.add("spring.liquibase.change-log", () -> "classpath:db/db.changelog-master.yaml");
-        registry.add("spring.liquibase.enable", () -> true);
-
-        System.setProperty("spring.datasource.url", postgreSQLContainer.getJdbcUrl());
-        System.setProperty("spring.datasource.username", postgreSQLContainer.getUsername());
-        System.setProperty("spring.datasource.password", postgreSQLContainer.getPassword());
-
+        registry.add("spring.liquibase.change-log", () -> "classpath:db/changelog/db.changelog-master.yaml");
+        registry.add("spring.liquibase.enabled", () -> true);
+        registry.add("spring.liquibase.contexts", () -> "test");
     }
 
 }

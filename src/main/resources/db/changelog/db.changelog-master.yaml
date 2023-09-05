@@ -6,15 +6,16 @@ databaseChangeLog:
               - sqlFile:
                     dbms: postgresql
                     encoding: utf8
-                    path: changelog/scripts/schema.sql
+                    path: scripts/schema.sql
                     relativeToChangelogFile: true
 
     - changeSet:
           id: insertData
           author: freelkee
+          context: prod
           changes:
               - sqlFile:
                     dbms: postgresql
                     encoding: utf8
-                    path: changelog/scripts/data.sql
+                    path: scripts/data.sql
                     relativeToChangelogFile: true
