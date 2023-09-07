@@ -1,5 +1,6 @@
 package com.freelkee.carmanager.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -21,9 +22,13 @@ public class Owner {
     @Column(name = "name")
     private String name;
 
+    @JsonIgnore
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "car_id")
     private Car car;
+
+    @Column(name = "budget")
+    private int budget;
 
 
 }

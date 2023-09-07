@@ -35,4 +35,5 @@ public class SellerService {
         return SellerResponse.of(sellerRepository.findById(id)
             .orElseThrow(() -> new RuntimeException(String.format("Seller %d does not exist", id))));
     }
+
 }

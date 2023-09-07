@@ -9,6 +9,7 @@ import java.util.Objects;
 @Getter
 @Builder
 @AllArgsConstructor
+
 public class OwnerResponse {
 
     private final Long id;
@@ -17,11 +18,14 @@ public class OwnerResponse {
 
     private final Long carId;
 
+    private final Integer budget;
+
     public static OwnerResponse of(final Owner owner) {
         return OwnerResponse.builder()
             .id(owner.getId())
             .name(owner.getName())
             .carId(owner.getCar() == null ? null : owner.getCar().getId())
+            .budget(owner.getBudget())
             .build();
     }
 
@@ -33,11 +37,13 @@ public class OwnerResponse {
         return
             id.equals(that.id) &&
                 Objects.equals(name, that.name)
-                && Objects.equals(carId, that.carId);
+                && Objects.equals(carId, that.carId)
+                && budget.equals(that.budget);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, carId);
+        return Objects.hash(id, name, carId, budget);
     }
 }
+

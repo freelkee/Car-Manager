@@ -1,5 +1,6 @@
 package com.freelkee.carmanager.restcontroller;
 
+import com.freelkee.carmanager.entity.Car;
 import com.freelkee.carmanager.response.CarResponse;
 import com.freelkee.carmanager.service.CarService;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,4 +34,8 @@ public class CarRESTController {
         return carService.getCarsBetweenPrice(forr, to);
     }
 
+    @GetMapping("/budget/{ownerId}")
+    public List<Car> getSellersByBudget(@PathVariable final Long ownerId) {
+        return carService.getCarsByOwnerBudget(ownerId);
+    }
 }

@@ -11,13 +11,13 @@ import java.util.Objects;
 @AllArgsConstructor
 public class CarResponse {
 
-    private Long id;
+    private final Long id;
 
-    private int price;
+    private final int price;
 
-    private int year;
+    private final int year;
 
-    private int enginePower;
+    private final int enginePower;
 
     public static CarResponse of(final Car car) {
         return CarResponse.builder()

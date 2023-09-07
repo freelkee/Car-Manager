@@ -11,9 +11,9 @@ import java.util.Objects;
 @AllArgsConstructor
 public class SellerResponse {
 
-    private Long id;
+    private final Long id;
 
-    private String name;
+    private final String name;
 
     public static SellerResponse of(final Seller seller) {
         return SellerResponse.builder()
