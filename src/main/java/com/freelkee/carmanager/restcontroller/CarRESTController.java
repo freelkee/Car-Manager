@@ -1,7 +1,5 @@
 package com.freelkee.carmanager.restcontroller;
 
-import com.freelkee.carmanager.entity.Owner;
-import com.freelkee.carmanager.entity.Seller;
 import com.freelkee.carmanager.response.CarResponse;
 import com.freelkee.carmanager.service.CarService;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Set;
 
 @RestController
 @RequestMapping("/api/v1/car")
@@ -26,14 +23,14 @@ public class CarRESTController {
         return carService.getCars();
     }
 
-    @GetMapping("/{id}/seller")
-    public Set<Seller> getSellers(@PathVariable final Long id) {
-        return carService.getSellers(id);
+    @GetMapping("/by-year/between/{forr}-{to}")
+    public List<CarResponse> getCarsBetweenYears(@PathVariable final int forr, @PathVariable final int to) {
+        return carService.getCarsBetweenYears(forr, to);
     }
 
-    @GetMapping("/{id}/owner")
-    public Set<Owner> getOwners(@PathVariable final Long id) {
-        return carService.getOwners(id);
+    @GetMapping("/by-price/between/{forr}-{to}")
+    public List<CarResponse> getCarsBetweenPrice(@PathVariable final int forr, @PathVariable final int to) {
+        return carService.getCarsBetweenPrice(forr, to);
     }
 
 }
