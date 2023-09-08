@@ -1,5 +1,6 @@
 package com.freelkee.carmanager.service;
 
+import com.freelkee.carmanager.entity.Owner;
 import com.freelkee.carmanager.repository.OwnerRepository;
 import com.freelkee.carmanager.response.OwnerResponse;
 import org.springframework.stereotype.Service;
@@ -24,12 +25,15 @@ public class OwnerService {
             .collect(Collectors.toList());
     }
 
+    public Owner getOwner(Long id){
+        return ownerRepository.getReferenceById(id);
+    }
+
 
     public Set<OwnerResponse> getOwnersWithoutCar() {
         return ownerRepository.getAllByCar(null).stream()
             .map(OwnerResponse::of)
             .collect(Collectors.toSet());
     }
-
 
 }

@@ -45,7 +45,7 @@ public class CarService {
             .map(CarResponse::of).collect(Collectors.toList());
     }
 
-    public List<Car> getCarsByOwnerBudget(final Long ownerId){
-        return carRepository.findCarsByOwnerBudget(ownerId);
+    public List<Car> getCarsByOwnerBudget(final int ownerId){
+        return carRepository.getByPriceLessThanEqual(ownerId);
     }
 }
