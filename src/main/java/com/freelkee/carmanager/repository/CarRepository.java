@@ -6,7 +6,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface CarRepository extends JpaRepository<Car, Long> {
-    List<Car> getAllByYearBetweenOrderByYearAsc(int year, int year2);
-    List<Car> getAllByPriceBetweenOrderByPriceAsc(int year, int year2);
+
     List<Car> getByPriceLessThanEqual(int budget);
+
+    List<Car> getAllByYearBetweenAndPriceBetweenOrderByYearAscPriceAsc(int minYear, int maxYear, int minPrice, int maxPrice);
+
 }

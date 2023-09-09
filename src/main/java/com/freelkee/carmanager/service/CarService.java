@@ -34,18 +34,19 @@ public class CarService {
         return carRepository.getReferenceById(carId).getSellers();
     }
 
-    public List<CarResponse> getCarsBetweenYears(int year1, int year2){
-        return carRepository.getAllByYearBetweenOrderByYearAsc(year1, year2).stream()
+
+    public List<Car> getCarsByOwnerBudget(final int ownerId) {
+        return carRepository.getByPriceLessThanEqual(ownerId);
+    }
+
+    public List<CarResponse> searchCars(final int minYear, final int maxYear, final int minPrice, final int maxPrice) {
+        var cars = carRepository.getAllByYearBetweenAndPriceBetweenOrderByYearAscPriceAsc
+            (
+                minYear, maxYear, minPrice, maxPrice
+            );
+
+        return cars.stream()
             .map(CarResponse::of)
             .collect(Collectors.toList());
-    }
-
-    public List<CarResponse> getCarsBetweenPrice(int price1, int price2){
-        return carRepository.getAllByPriceBetweenOrderByPriceAsc(price1, price2).stream()
-            .map(CarResponse::of).collect(Collectors.toList());
-    }
-
-    public List<Car> getCarsByOwnerBudget(final int ownerId){
-        return carRepository.getByPriceLessThanEqual(ownerId);
     }
 }

@@ -19,13 +19,12 @@ public class OwnerService {
     }
 
     public List<OwnerResponse> getOwners() {
-        return ownerRepository.findAll()
-            .stream()
+        return ownerRepository.findAll().stream()
             .map(OwnerResponse::of)
             .collect(Collectors.toList());
     }
 
-    public Owner getOwner(Long id){
+    public Owner getOwner(final Long id) {
         return ownerRepository.getReferenceById(id);
     }
 

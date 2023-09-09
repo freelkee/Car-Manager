@@ -9,9 +9,10 @@ import java.util.List;
 @Getter
 @Setter
 @AllArgsConstructor
-public class BudgetOpportunities {
+public class CarBudgetAvailability {
 
-    private final List<CarBudgetAvailability> carBudgetAvailabilities;
+    private final CarResponse carResponse;
 
+    private final List<SellerResponse> sellerResponses;
 
 }

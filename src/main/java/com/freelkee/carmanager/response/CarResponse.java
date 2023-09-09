@@ -6,9 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Setter
 @Getter
@@ -20,17 +18,12 @@ public class CarResponse {
     private final int year;
     private final int enginePower;
 
-    private final List<SellerResponse> sellers;
-
     public static CarResponse of(final Car car) {
         return CarResponse.builder()
             .id(car.getId())
             .price(car.getPrice())
             .year(car.getYear())
             .enginePower(car.getEnginePower())
-            .sellers(car.getSellers().stream()
-                .map(SellerResponse::of)
-                .collect(Collectors.toList()))
             .build();
     }
 
@@ -47,13 +40,12 @@ public class CarResponse {
             price == carResponse.getPrice() &&
                 year == carResponse.getYear() &&
                 enginePower == carResponse.getEnginePower() &&
-                Objects.equals(id, carResponse.getId()) &&
-                sellers == carResponse.getSellers();
+                Objects.equals(id, carResponse.getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, price, year, enginePower, sellers);
+        return Objects.hash(id, price, year, enginePower);
     }
 
 }
