@@ -1,10 +1,7 @@
 package com.freelkee.carmanager.response;
 
 import com.freelkee.carmanager.entity.Car;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Objects;
 
@@ -12,11 +9,12 @@ import java.util.Objects;
 @Getter
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class CarResponse {
-    private final Long id;
-    private final int price;
-    private final int year;
-    private final int enginePower;
+    private Long id;
+    private int price;
+    private int year;
+    private int enginePower;
 
     public static CarResponse of(final Car car) {
         return CarResponse.builder()

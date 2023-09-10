@@ -2,6 +2,7 @@ package com.freelkee.carmanager.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
@@ -9,10 +10,11 @@ import java.util.List;
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class CarBudgetAvailability {
 
-    private final CarResponse carResponse;
+    private CarResponse carResponse;
 
-    private final List<SellerResponse> sellerResponses;
+    private List<SellerResponse> sellerResponses;
 
 }

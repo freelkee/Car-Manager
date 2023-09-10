@@ -36,7 +36,7 @@ public class CarRESTController {
     }
 
     @GetMapping("/budget-opportunities/{ownerId}")
-    public BudgetOpportunities getSellersByBudget(@PathVariable final Long ownerId) {
+    public BudgetOpportunities getBudgetOpportunities(@PathVariable final Long ownerId) {
         final var ownerResponse = OwnerResponse.of(ownerService.getOwner(ownerId));
         final var cars = carService.getCarsByOwnerBudget(ownerResponse.getBudget());
 

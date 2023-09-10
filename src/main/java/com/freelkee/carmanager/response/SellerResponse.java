@@ -9,11 +9,12 @@ import java.util.Objects;
 @Getter
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class SellerResponse {
 
-    private final Long id;
+    private Long id;
 
-    private final String name;
+    private String name;
 
     public static SellerResponse of(final Seller seller) {
         return SellerResponse.builder()
