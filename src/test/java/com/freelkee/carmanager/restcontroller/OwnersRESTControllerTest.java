@@ -72,7 +72,7 @@ public class OwnersRESTControllerTest extends BaseTestContainersTest {
             .andReturn();
 
         final var stringResult = result.getResponse().getContentAsString();
-        List<LinkedHashMap> actualOwnersInLinkedHashMaps = new ObjectMapper().readValue(stringResult, List.class);
+        final List<LinkedHashMap> actualOwnersInLinkedHashMaps = new ObjectMapper().readValue(stringResult, List.class);
 
         for (int i = 0; i < expectedOwnersResponse.size(); i++) {
             var actual = actualOwnersInLinkedHashMaps.get(i);

@@ -1,10 +1,11 @@
 package com.freelkee.carmanager.service;
 
-import com.freelkee.carmanager.entity.Car;
 import com.freelkee.carmanager.entity.Owner;
 import com.freelkee.carmanager.entity.Seller;
 import com.freelkee.carmanager.repository.CarRepository;
+import com.freelkee.carmanager.response.CarBudgetAvailability;
 import com.freelkee.carmanager.response.CarResponse;
+import com.freelkee.carmanager.response.SellerResponse;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -35,8 +36,15 @@ public class CarService {
     }
 
 
-    public List<Car> getCarsByOwnerBudget(final int ownerId) {
-        return carRepository.getByPriceLessThanEqual(ownerId);
+    public List<CarBudgetAvailability> getCarsByOwnerBudget(final int budget) {
+        return carRepository.getByPriceLessThanEqual(budget).stream()
+            .map(car -> new CarBudgetAvailability(
+                CarResponse.of(car),
+                car.getSellers().stream()
+                    .map(SellerResponse::of)
+                    .collect(Collectors.toList())
+            ))
+            .collect(Collectors.toList());
     }
 
     public List<CarResponse> searchCars(final int minYear, final int maxYear, final int minPrice, final int maxPrice) {

@@ -1,12 +1,12 @@
 package com.freelkee.carmanager.restcontroller;
 
-import com.freelkee.carmanager.response.*;
+import com.freelkee.carmanager.response.BudgetOpportunities;
+import com.freelkee.carmanager.response.CarResponse;
 import com.freelkee.carmanager.service.CarService;
 import com.freelkee.carmanager.service.OwnerService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/car")
@@ -37,18 +37,8 @@ public class CarRESTController {
 
     @GetMapping("/budget-opportunities/{ownerId}")
     public BudgetOpportunities getBudgetOpportunities(@PathVariable final Long ownerId) {
-        final var ownerResponse = OwnerResponse.of(ownerService.getOwner(ownerId));
-        final var cars = carService.getCarsByOwnerBudget(ownerResponse.getBudget());
+        var carBudgetAvailability = carService.getCarsByOwnerBudget(ownerService.getOwner(ownerId).getBudget());
+        return new BudgetOpportunities(carBudgetAvailability);
 
-        final var carBudgetAvailabilities = cars.stream()
-            .map(car -> new CarBudgetAvailability(
-                CarResponse.of(car),
-                car.getSellers().stream()
-                    .map(SellerResponse::of)
-                    .collect(Collectors.toList())
-            ))
-            .collect(Collectors.toList());
-
-        return new BudgetOpportunities(carBudgetAvailabilities);
     }
 }

@@ -38,6 +38,9 @@ class CarRESTControllerTest extends BaseTestContainersTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
     @Test
     void searchCars() throws Exception {
 
@@ -91,7 +94,8 @@ class CarRESTControllerTest extends BaseTestContainersTest {
             .andReturn();
 
         final var stringResult = result.getResponse().getContentAsString();
-        List<LinkedHashMap<String, Integer>> actualCarsInLinkedHashMaps = new ObjectMapper().readValue(stringResult, List.class);
+        final List<LinkedHashMap<String, Integer>> actualCarsInLinkedHashMaps =
+            objectMapper.readValue(stringResult, List.class);
 
         for (int i = 0; i < expectedCar.size(); i++) {
             var actual = actualCarsInLinkedHashMaps.get(i);
@@ -145,14 +149,14 @@ class CarRESTControllerTest extends BaseTestContainersTest {
         carRepository.saveAll(cars);
         ownerRepository.save(owner);
 
-        Long ownerId = owner.getId();
+        final var ownerId = owner.getId();
 
         var result = mockMvc.perform(get("/api/v1/car/budget-opportunities/" + ownerId))
             .andExpect(status().isOk())
             .andReturn();
 
         final var stringResult = result.getResponse().getContentAsString();
-        BudgetOpportunities response = new ObjectMapper().readValue(stringResult, BudgetOpportunities.class);
+        final BudgetOpportunities response = objectMapper.readValue(stringResult, BudgetOpportunities.class);
 
         for (CarBudgetAvailability carBudgetAvailability : response.getCarBudgetAvailabilities()) {
             assertTrue(carBudgetAvailability.getCarResponse().getPrice() <= owner.getBudget());

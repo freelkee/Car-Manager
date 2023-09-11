@@ -15,6 +15,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -56,9 +57,19 @@ public class OwnerControllerTest extends BaseTestContainersTest {
         assertEquals(sortedOwners.size(), sortedOwnersResponses.size());
 
         for (int i = 0; i < sortedOwners.size(); i++) {
-            assertEquals(sortedOwners.get(i).getId(), sortedOwnersResponses.get(i).getId());
-            assertEquals(sortedOwners.get(i).getName(), sortedOwnersResponses.get(i).getName());
-            assertEquals(sortedOwners.get(i).getCar().getId(), sortedOwnersResponses.get(i).getCarId());
+            var expected = sortedOwners.get(i);
+            var actual = sortedOwnersResponses.get(i);
+
+            assertEquals(expected.getId(), actual.getId());
+            assertEquals(expected.getName(), actual.getName());
+
+            if (expected.getCar() != null) {
+                assertEquals(expected.getCar().getId(), actual.getCarId());
+            } else {
+                assertNull(actual.getCarId());
+            }
+
+
         }
     }
 }
