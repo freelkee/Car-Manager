@@ -9,6 +9,7 @@ import java.util.Objects;
 @Getter
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class SellerResponse {
 
     private Long id;

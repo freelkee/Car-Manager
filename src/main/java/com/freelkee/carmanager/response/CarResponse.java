@@ -9,14 +9,11 @@ import java.util.Objects;
 @Getter
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class CarResponse {
-
     private Long id;
-
     private int price;
-
     private int year;
-
     private int enginePower;
 
     public static CarResponse of(final Car car) {
@@ -29,7 +26,7 @@ public class CarResponse {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }
@@ -48,4 +45,6 @@ public class CarResponse {
     public int hashCode() {
         return Objects.hash(id, price, year, enginePower);
     }
+
 }
+

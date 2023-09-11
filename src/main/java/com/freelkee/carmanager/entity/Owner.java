@@ -25,5 +25,8 @@ public class Owner {
     @JoinColumn(name = "car_id")
     private Car car;
 
+    @Column(name = "budget")
+    private int budget;
+
 
 }

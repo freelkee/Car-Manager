@@ -29,6 +29,7 @@ CREATE TABLE IF NOT EXISTS owners
     id     serial PRIMARY KEY,
     name   varchar(100),
     car_id integer,
+    budget integer,
     FOREIGN KEY (car_id) REFERENCES cars (id)
 );
 

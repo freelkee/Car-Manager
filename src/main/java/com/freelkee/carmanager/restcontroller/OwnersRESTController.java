@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/v1/owner")
@@ -21,4 +22,10 @@ public class OwnersRESTController {
     public List<OwnerResponse> getOwners() {
         return ownerService.getOwners();
     }
+
+    @GetMapping("/without-car")
+    public Set<OwnerResponse> getOwnersWithoutCar() {
+        return ownerService.getOwnersWithoutCar();
+    }
+
 }

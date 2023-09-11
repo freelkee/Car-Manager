@@ -25,14 +25,14 @@ VALUES (1, 1),
        (5, 1),
        (5, 2);
 
-INSERT INTO owners (name, car_id)
-VALUES ('John Smith', 1),
-       ('Emily Johnson', 1),
-       ('Michael Brown', 3),
-       ('Sophia Williams', 2),
-       ('David Taylor', 1),
-       ('Joe Biden', 2),
-       ('Jennifer White', 5),
-       ('Robert Davis', 5),
-       ('Maria Martinez', 3),
-       ('Daniel Wilson', null);
+INSERT INTO owners (name, car_id, budget)
+VALUES ('John Smith', 1, 20000),
+       ('Emily Johnson', 1, 8000),
+       ('Michael Brown', 3, 40000),
+       ('Sophia Williams', 2, 20000),
+       ('David Taylor', null, 18000),
+       ('Joe Biden', 2, 21000),
+       ('Jennifer White', 5, 5000),
+       ('Robert Davis', 5, 60000),
+       ('Maria Martinez', 3, 15000),
+       ('Daniel Wilson', null, 30000);

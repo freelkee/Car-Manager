@@ -5,6 +5,7 @@ import com.freelkee.carmanager.response.OwnerResponse;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -17,9 +18,19 @@ public class OwnerService {
     }
 
     public List<OwnerResponse> getOwners() {
-        return ownerRepository.findAll()
-            .stream()
+        return ownerRepository.findAll().stream()
             .map(OwnerResponse::of)
             .collect(Collectors.toList());
     }
+
+    public OwnerResponse getOwner(final Long id) {
+        return OwnerResponse.of(ownerRepository.getReferenceById(id));
+    }
+
+    public Set<OwnerResponse> getOwnersWithoutCar() {
+        return ownerRepository.getAllByCar(null).stream()
+            .map(OwnerResponse::of)
+            .collect(Collectors.toSet());
+    }
+
 }
