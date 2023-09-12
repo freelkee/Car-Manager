@@ -1,5 +1,6 @@
 package com.freelkee.carmanager.restcontroller;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.freelkee.carmanager.BaseTestContainersTest;
 import com.freelkee.carmanager.entity.Car;
@@ -9,13 +10,13 @@ import com.freelkee.carmanager.repository.CarRepository;
 import com.freelkee.carmanager.repository.OwnerRepository;
 import com.freelkee.carmanager.response.BudgetOpportunities;
 import com.freelkee.carmanager.response.CarBudgetAvailability;
+import com.freelkee.carmanager.response.CarResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -71,10 +72,10 @@ class CarRESTControllerTest extends BaseTestContainersTest {
         final var cars = Arrays.asList(car1, car2, car3, car4);
         carRepository.saveAll(cars);
 
-        final int minYear = 25000;
-        final int maxYear = 30000;
-        final int minPrice = 2021;
-        final int maxPrice = 2022;
+        final int minYear = 2021;
+        final int maxYear = 2022;
+        final int minPrice = 25000;
+        final int maxPrice = 30000;
 
         final var expectedCar = cars.stream()
             .filter
@@ -86,25 +87,29 @@ class CarRESTControllerTest extends BaseTestContainersTest {
                 )
             .collect(Collectors.toList());
 
-        var result = mockMvc.perform(get(String.format(
-                "/api/v1/car/search?minYear=%d&maxYear=%d&minPrice=%d&maxPrice=%d",
-                minYear, maxYear, minPrice, maxPrice)))
+        var result = mockMvc.perform(get(String.format
+                (
+                    "/api/v1/car/search?minYear=%d&maxYear=%d&minPrice=%d&maxPrice=%d",
+                    minYear, maxYear, minPrice, maxPrice
+                )))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$", hasSize(expectedCar.size())))
             .andReturn();
 
         final var stringResult = result.getResponse().getContentAsString();
-        final List<LinkedHashMap<String, Integer>> actualCarsInLinkedHashMaps =
-            objectMapper.readValue(stringResult, List.class);
+        final var actualCarsResponses =
+            objectMapper.readValue(stringResult, new TypeReference<List<CarResponse>>() {});
+
+
 
         for (int i = 0; i < expectedCar.size(); i++) {
-            var actual = actualCarsInLinkedHashMaps.get(i);
+            var actual = actualCarsResponses.get(i);
             assertTrue
                 (
-                    actual.get("price") >= minPrice &&
-                        actual.get("price") <= maxPrice &&
-                        actual.get("year") >= minYear &&
-                        actual.get("year") <= maxYear
+                    actual.getPrice() >= minPrice &&
+                        actual.getPrice() <= maxPrice &&
+                        actual.getYear() >= minYear &&
+                        actual.getYear() <= maxYear
                 );
         }
     }
