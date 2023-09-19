@@ -17,4 +17,7 @@ spring:
     hibernate:
       ddl-auto:
 
-
+springdoc:
+  api-docs:
+    path:
+      /api-docs

@@ -2,6 +2,7 @@ package com.freelkee.carmanager.restcontroller;
 
 import com.freelkee.carmanager.response.OwnerResponse;
 import com.freelkee.carmanager.service.OwnerService;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,11 +20,14 @@ public class OwnersRESTController {
     }
 
     @GetMapping
+    @Operation(summary = "Getting a list of \"OwnerResponse\" consisting of all owners in the database.")
     public List<OwnerResponse> getOwners() {
         return ownerService.getOwners();
     }
 
     @GetMapping("/without-car")
+    @Operation(summary = "Getting a list of \"OwnerResponse\" consisting of" +
+        " all owners in the database who do not have a car")
     public Set<OwnerResponse> getOwnersWithoutCar() {
         return ownerService.getOwnersWithoutCar();
     }

@@ -28,6 +28,9 @@ dependencies {
 
     implementation('org.liquibase:liquibase-core')
     implementation 'com.jayway.jsonpath:json-path:2.6.0'
+
+    implementation 'org.springdoc:springdoc-openapi-ui:1.7.0'
+
     runtimeOnly('org.postgresql:postgresql')
 
 
