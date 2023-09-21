@@ -6,7 +6,7 @@ databaseChangeLog:
               - sqlFile:
                     dbms: postgresql
                     encoding: utf8
-                    path: scripts/schema.sql
+                    path: scripts/v1.0.0/schema.sql
                     relativeToChangelogFile: true
 
     - changeSet:
@@ -17,5 +17,16 @@ databaseChangeLog:
               - sqlFile:
                     dbms: postgresql
                     encoding: utf8
-                    path: scripts/data.sql
+                    path: scripts/v1.0.0/data.sql
                     relativeToChangelogFile: true
+
+    - changeSet:
+        id: addAddress
+        author: freelkee
+        context: prod
+        changes:
+          - sqlFile:
+              dbms: postgresql
+              encoding: utf8
+              path: scripts/v1.1.0/add_address.sql
+              relativeToChangelogFile: true

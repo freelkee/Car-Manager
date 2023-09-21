@@ -22,6 +22,9 @@ public class Seller {
     @Column(name = "name")
     private String name;
 
+    @Column(name = "address")
+    private String address;
+
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
         name = "sellers_to_cars",
