@@ -69,16 +69,14 @@ public class SellerService {
                     final var coordinatesArray = geojsonObject.getJSONArray("coordinates");
 
                     final var coordinatesList = new ArrayList<double[]>();
-                    for (int i = 0; i < coordinatesArray.length(); i++) {
-                        final var polygon = coordinatesArray.getJSONArray(i);
-                        for (int j = 0; j < polygon.length(); j++) {
-                            final var coordinates = polygon.getJSONArray(j);
-                            final var longitude = coordinates.getDouble(0);
-                            final var latitude = coordinates.getDouble(1);
-                            coordinatesList.add(new double[]{longitude, latitude});
+                    if (geojsonObject.getString("type").equals("Polygon")) {
+                        addCoordinates(coordinatesList, coordinatesArray);
+                    } else if (geojsonObject.getString("type").equals("MultiPolygon")) {
+                        for (int i = 0; i < coordinatesArray.length(); i++) {
+                            final var polygon = coordinatesArray.getJSONArray(i);
+                            addCoordinates(coordinatesList, polygon);
                         }
                     }
-
                     final var lat = coordinatesList.stream()
                         .map(coordinate -> coordinate[0])
                         .collect(Collectors.toList());
@@ -99,16 +97,28 @@ public class SellerService {
                     final var formattedLat = df.format(latAverage).replace(',', '.');
                     final var formattedLan = df.format(lanAverage).replace(',', '.');
 
-                    return formattedLat + ", " + formattedLan;
+                    return formattedLan  + ", " + formattedLat;
                 } else {
-                    return "Нет данных о координатах.";
+                    return "There is no data about coordinates.\n";
                 }
             } else {
-                return "Ошибка при выполнении запроса. Код ответа: " + responseCode;
+                return "Error when executing the request. Response code:" + responseCode;
             }
         } catch (Exception e) {
             e.printStackTrace();
-            return "Ошибка при выполнении запроса.";
+            return "Error when executing the request.";
+        }
+    }
+
+    private static void addCoordinates(ArrayList<double[]> coordinatesList, JSONArray polygon) {
+        for (int j = 0; j < polygon.length(); j++) {
+            final var polygonJSONArray = polygon.getJSONArray(j);
+            for (int k = 0; k < polygonJSONArray.length(); k++) {
+                final var coordinates = polygonJSONArray.getJSONArray(k);
+                final var longitude = coordinates.getDouble(0);
+                final var latitude = coordinates.getDouble(1);
+                coordinatesList.add(new double[]{longitude, latitude});
+            }
         }
     }
 }
