@@ -31,6 +31,8 @@ dependencies {
 
     implementation 'org.springdoc:springdoc-openapi-ui:1.7.0'
 
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.7.1'
+
     runtimeOnly('org.postgresql:postgresql')
 
     implementation group: 'org.postgresql', name: 'postgresql', version: '42.6.0'
