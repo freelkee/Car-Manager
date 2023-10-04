@@ -23,7 +23,6 @@ databaseChangeLog:
     - changeSet:
         id: addAddress
         author: freelkee
-        context: prod
         changes:
           - sqlFile:
               dbms: postgresql

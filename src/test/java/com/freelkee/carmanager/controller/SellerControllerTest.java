@@ -5,7 +5,9 @@ import com.freelkee.carmanager.entity.Car;
 import com.freelkee.carmanager.entity.Seller;
 import com.freelkee.carmanager.repository.SellerRepository;
 import com.freelkee.carmanager.response.CarResponse;
+import com.freelkee.carmanager.response.ObjectCenter;
 import com.freelkee.carmanager.response.SellerResponse;
+import com.freelkee.carmanager.service.SellerService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -15,6 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -37,10 +41,12 @@ public class SellerControllerTest extends BaseTestContainersTest {
     public void showAllSellers() throws Exception {
         final var seller1 = Seller.builder()
             .name("Big Shop")
+            .address("Уфа")
             .build();
 
         final var seller2 = Seller.builder()
             .name("Small Shop")
+            .address("Северодвинск")
             .build();
 
         final var car1 = Car.builder()
@@ -88,6 +94,7 @@ public class SellerControllerTest extends BaseTestContainersTest {
         for (int i = 0; i < sortedSellers.size(); i++) {
             assertEquals(sortedSellers.get(i).getId(), sortedSellersResponses.get(i).getId());
             assertEquals(sortedSellers.get(i).getName(), sortedSellersResponses.get(i).getName());
+            assertAddress(sortedSellers.get(i).getAddress(), sortedSellersResponses.get(i).getAddress());
         }
     }
 
@@ -141,8 +148,8 @@ public class SellerControllerTest extends BaseTestContainersTest {
         assertEquals(sortedCars.size(), sortedCarsResponses.size());
 
         for (int i = 0; i < sortedCars.size(); i++) {
-            var car = sortedCars.get(i);
-            var carResponse = sortedCarsResponses.get(i);
+            final var car = sortedCars.get(i);
+            final var carResponse = sortedCarsResponses.get(i);
 
             assertEquals(car.getId(), carResponse.getId());
             assertEquals(car.getPrice(), carResponse.getPrice());
@@ -155,5 +162,29 @@ public class SellerControllerTest extends BaseTestContainersTest {
 
         assertEquals(seller.getId(), returnedSellerResponse.getId());
         assertEquals(seller.getName(), returnedSellerResponse.getName());
+    }
+
+    private static void assertAddress(String address, String responseAddress) {
+
+        final Pattern pattern = Pattern.compile("(.+) - ([-+]?[0-3]*\\.?[0-9]+), ([-+]?[0-3]*\\.?[0-9]+)");
+        final Matcher matcher = pattern.matcher(responseAddress);
+
+        if (matcher.matches()) {
+
+            final String responseCity = matcher.group(0);
+            final double responseLat = Double.parseDouble(matcher.group(2));
+            final double responseLon = Double.parseDouble(matcher.group(3));
+
+            final ObjectCenter coordinates = SellerService.getCoordinates(address);
+            final double lat = coordinates.getLat();
+            final double lon = coordinates.getLon();
+
+            assertEquals(address, responseCity);
+            assertEquals(lat, responseLat);
+            assertEquals(lon, responseLon);
+
+        } else {
+            System.out.println("Could not extract information from the string.");
+        }
     }
 }

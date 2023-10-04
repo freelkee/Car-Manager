@@ -8,6 +8,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,6 +16,7 @@ import java.util.stream.Collectors;
 @Service
 public class SellerService {
 
+    private static final String OPEN_STREET_MAP_URL = "https://nominatim.openstreetmap.org/search?q=%s&format=json&polygon_geojson=1";
     private final SellerRepository sellerRepository;
 
 
@@ -25,13 +27,22 @@ public class SellerService {
     public List<SellerResponse> getSellers() {
         return sellerRepository.findAll().stream()
             .map(SellerResponse::of)
-            .peek(s -> s.setAddress(String.format
-                (
-                    "%s - %f, %f",
-                    s.getAddress(),
-                    getCoordinates(s.getAddress()).getLat(),
-                    getCoordinates(s.getAddress()).getLon()
-                )))
+            .peek(sellerResponse -> {
+                ObjectCenter coordinates = getCoordinates(sellerResponse.getAddress());
+
+                final var df = new DecimalFormat("#.######");
+                final String formattedLat = df.format(coordinates.getLat()).replace(',', '.');
+                final String formattedLan = df.format(coordinates.getLon()).replace(',', '.');
+
+                sellerResponse.setAddress(String.format
+                    (
+                        "%s - %s, %s",
+                        sellerResponse.getAddress(),
+                        formattedLat,
+                        formattedLan
+                    )
+                );
+            })
             .collect(Collectors.toList());
     }
 
@@ -49,11 +60,7 @@ public class SellerService {
 
 
     public static ObjectCenter getCoordinates(String cityName) {
-        final var apiUrl = String.format
-            (
-                "https://nominatim.openstreetmap.org/search?q=%s&format=json&polygon_geojson=1",
-                cityName
-            );
+        final var apiUrl = String.format(OPEN_STREET_MAP_URL, cityName);
 
         return new RestTemplate()
             .exchange(apiUrl, HttpMethod.GET, null, ObjectCenter.class)
