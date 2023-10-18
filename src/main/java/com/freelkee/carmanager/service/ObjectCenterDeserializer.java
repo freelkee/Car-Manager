@@ -51,11 +51,11 @@ public class ObjectCenterDeserializer extends StdDeserializer<ObjectCenter> {
                         .average().orElse(0.0)
                 );
         } else {
-            throw new RuntimeException();
+            throw new RuntimeException("Address not found");
         }
     }
 
-    private static void addCoordinates(List<double[]> coordinatesList, JsonNode coordinatesNode) {
+    private void addCoordinates(List<double[]> coordinatesList, JsonNode coordinatesNode) {
         for (int i = 0; i < coordinatesNode.size(); i++) {
             final var coordinates = coordinatesNode.get(i);
             for (int j = 0; j < coordinates.size(); j++) {

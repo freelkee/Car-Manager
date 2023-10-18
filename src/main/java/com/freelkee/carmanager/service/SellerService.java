@@ -16,7 +16,8 @@ import java.util.stream.Collectors;
 @Service
 public class SellerService {
 
-    private static final String OPEN_STREET_MAP_URL = "https://nominatim.openstreetmap.org/search?q=%s&format=json&polygon_geojson=1";
+    private static final String OPEN_STREET_MAP_URL =
+        "https://nominatim.openstreetmap.org/search?q=%s&format=json&polygon_geojson=1";
     private final SellerRepository sellerRepository;
 
 
@@ -26,24 +27,29 @@ public class SellerService {
 
     public List<SellerResponse> getSellers() {
         return sellerRepository.findAll().stream()
-            .map(SellerResponse::of)
-            .peek(sellerResponse -> {
-                ObjectCenter coordinates = getCoordinates(sellerResponse.getAddress());
-
-                final var df = new DecimalFormat("#.######");
-                final String formattedLat = df.format(coordinates.getLat()).replace(',', '.');
-                final String formattedLan = df.format(coordinates.getLon()).replace(',', '.');
-
-                sellerResponse.setAddress(String.format
-                    (
-                        "%s - %s, %s",
-                        sellerResponse.getAddress(),
-                        formattedLat,
-                        formattedLan
-                    )
-                );
+            .map(seller -> {
+                final var sellerResponse = SellerResponse.of(seller);
+                addCoordinatesInAddressOfSellerResponse(sellerResponse);
+                return sellerResponse;
             })
             .collect(Collectors.toList());
+    }
+
+    private void addCoordinatesInAddressOfSellerResponse(SellerResponse sellerResponse) {
+        ObjectCenter coordinates = getCoordinates(sellerResponse.getAddress());
+
+        final var df = new DecimalFormat("#.######");
+        final String formattedLat = df.format(coordinates.getLat()).replace(',', '.');
+        final String formattedLan = df.format(coordinates.getLon()).replace(',', '.');
+
+        sellerResponse.setAddress(String.format
+            (
+                "%s - %s, %s",
+                sellerResponse.getAddress(),
+                formattedLat,
+                formattedLan
+            )
+        );
     }
 
     public List<CarResponse> getCars(final Long sellerId) {
@@ -59,7 +65,7 @@ public class SellerService {
     }
 
 
-    public static ObjectCenter getCoordinates(String cityName) {
+    public ObjectCenter getCoordinates(String cityName) {
         final var apiUrl = String.format(OPEN_STREET_MAP_URL, cityName);
 
         return new RestTemplate()

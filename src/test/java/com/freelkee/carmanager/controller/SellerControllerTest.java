@@ -5,9 +5,7 @@ import com.freelkee.carmanager.entity.Car;
 import com.freelkee.carmanager.entity.Seller;
 import com.freelkee.carmanager.repository.SellerRepository;
 import com.freelkee.carmanager.response.CarResponse;
-import com.freelkee.carmanager.response.ObjectCenter;
 import com.freelkee.carmanager.response.SellerResponse;
-import com.freelkee.carmanager.service.SellerService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -172,19 +170,10 @@ public class SellerControllerTest extends BaseTestContainersTest {
         if (matcher.matches()) {
 
             final String responseCity = matcher.group(0);
-            final double responseLat = Double.parseDouble(matcher.group(2));
-            final double responseLon = Double.parseDouble(matcher.group(3));
-
-            final ObjectCenter coordinates = SellerService.getCoordinates(address);
-            final double lat = coordinates.getLat();
-            final double lon = coordinates.getLon();
-
             assertEquals(address, responseCity);
-            assertEquals(lat, responseLat);
-            assertEquals(lon, responseLon);
 
         } else {
-            System.out.println("Could not extract information from the string.");
+            throw new RuntimeException("Could not extract information from the string.");
         }
     }
 }

@@ -13,6 +13,7 @@
     <th style="border: 1px solid #dddddd; padding: 8px; text-align: left;">Id</th>
     <th style="border: 1px solid #dddddd; padding: 8px; text-align: left;">Name</th>
     <th style="border: 1px solid #dddddd; padding: 8px; text-align: left;">Car</th>
+    <th style="border: 1px solid #dddddd; padding: 8px; text-align: left;">Budget</th>
   </tr>
   </thead>
   <tbody>
@@ -24,6 +25,7 @@
         <span th:text="${owner.getCarId()}"></span>
       </a>
     </td>
+    <td style="border: 1px solid #dddddd; padding: 8px;"> <span th:text="${owner.getBudget()}"></span></td>
   </tr>
   </tbody>
 </table>

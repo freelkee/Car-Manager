@@ -32,5 +32,4 @@ public class Seller {
         inverseJoinColumns = @JoinColumn(name = "car_id"))
     private Set<Car> cars;
 
-
 }
