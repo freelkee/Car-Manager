@@ -4,6 +4,8 @@ import com.freelkee.carmanager.repository.SellerRepository;
 import com.freelkee.carmanager.response.CarResponse;
 import com.freelkee.carmanager.response.ObjectCenter;
 import com.freelkee.carmanager.response.SellerResponse;
+
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -20,11 +22,15 @@ public class SellerService {
         "https://nominatim.openstreetmap.org/search?q=%s&format=json&polygon_geojson=1";
     private final SellerRepository sellerRepository;
 
+    private final RestTemplate restTemplate;
 
-    public SellerService(final SellerRepository sellerRepository) {
+
+    public SellerService(final SellerRepository sellerRepository, final RestTemplate restTemplate) {
         this.sellerRepository = sellerRepository;
+        this.restTemplate = restTemplate;
     }
 
+    @Cacheable("sellersCache")
     public List<SellerResponse> getSellers() {
         return sellerRepository.findAll().stream()
             .map(seller -> {
@@ -63,13 +69,12 @@ public class SellerService {
         return SellerResponse.of(sellerRepository.findById(id)
             .orElseThrow(() -> new RuntimeException(String.format("Seller %d does not exist", id))));
     }
-
-
+    @Cacheable("coordinatesCache")
     public ObjectCenter getCoordinates(String cityName) {
-        final var apiUrl = String.format(OPEN_STREET_MAP_URL, cityName);
+        final var fullApiUrl = String.format(OPEN_STREET_MAP_URL, cityName);
 
-        return new RestTemplate()
-            .exchange(apiUrl, HttpMethod.GET, null, ObjectCenter.class)
+        return restTemplate
+            .exchange(fullApiUrl, HttpMethod.GET, null, ObjectCenter.class)
             .getBody();
     }
 }

@@ -25,17 +25,17 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.springframework.boot:spring-boot-starter-cache'
 
     implementation 'org.liquibase:liquibase-core'
+    runtimeOnly('org.postgresql:postgresql')
+    implementation group: 'org.postgresql', name: 'postgresql', version: '42.6.0'
+
     implementation 'com.jayway.jsonpath:json-path:2.6.0'
 
     implementation 'org.springdoc:springdoc-openapi-ui:1.7.0'
 
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.7.1'
-
-    runtimeOnly('org.postgresql:postgresql')
-
-    implementation group: 'org.postgresql', name: 'postgresql', version: '42.6.0'
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.2'
     testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.9.2'

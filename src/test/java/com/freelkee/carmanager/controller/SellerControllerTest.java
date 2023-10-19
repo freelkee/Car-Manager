@@ -5,11 +5,18 @@ import com.freelkee.carmanager.entity.Car;
 import com.freelkee.carmanager.entity.Seller;
 import com.freelkee.carmanager.repository.SellerRepository;
 import com.freelkee.carmanager.response.CarResponse;
+import com.freelkee.carmanager.response.ObjectCenter;
 import com.freelkee.carmanager.response.SellerResponse;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +38,10 @@ public class SellerControllerTest extends BaseTestContainersTest {
 
     @Autowired
     private SellerRepository sellerRepository;
+
+    @Autowired
+    @MockBean
+    private RestTemplate restTemplate;
 
     @Autowired
     private MockMvc mockMvc;
@@ -95,6 +106,40 @@ public class SellerControllerTest extends BaseTestContainersTest {
             assertAddress(sortedSellers.get(i).getAddress(), sortedSellersResponses.get(i).getAddress());
         }
     }
+
+    @Test
+    public void testCoordinatesCaching() throws Exception {
+        ObjectCenter expectedObjectCenter = new ObjectCenter(59.926537, 30.26321);
+        final var seller1 = Seller.builder()
+            .name("Small Shop")
+            .address("Санкт-Петербург")
+            .build();
+        sellerRepository.save(seller1);
+
+        Mockito.when(restTemplate.exchange(
+            Mockito.anyString(),
+            Mockito.eq(HttpMethod.GET),
+            Mockito.any(),
+            Mockito.<Class<ObjectCenter>>any())
+        ).thenReturn(new ResponseEntity<>(expectedObjectCenter, HttpStatus.OK));
+
+        mockMvc.perform(get("/seller/"))
+            .andExpect(status().isOk())
+            .andReturn();
+
+        mockMvc.perform(get("/seller/"))
+            .andExpect(status().isOk())
+            .andReturn();
+
+        Mockito.verify(restTemplate, Mockito.times(1)).exchange(
+            Mockito.anyString(),
+            Mockito.eq(HttpMethod.GET),
+            Mockito.any(),
+            Mockito.<Class<ObjectCenter>>any()
+        );
+    }
+
+
 
     @Test
     public void showSeller() throws Exception {
