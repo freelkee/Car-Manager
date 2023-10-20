@@ -1,16 +1,15 @@
 package com.freelkee.carmanager.service;
 
+import com.freelkee.carmanager.entity.Seller;
 import com.freelkee.carmanager.repository.SellerRepository;
 import com.freelkee.carmanager.response.CarResponse;
 import com.freelkee.carmanager.response.ObjectCenter;
 import com.freelkee.carmanager.response.SellerResponse;
 
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,31 +17,27 @@ import java.util.stream.Collectors;
 @Service
 public class SellerService {
 
-    private static final String OPEN_STREET_MAP_URL =
-        "https://nominatim.openstreetmap.org/search?q=%s&format=json&polygon_geojson=1";
     private final SellerRepository sellerRepository;
+    private final CoordinatesService coordinatesService;
 
-    private final RestTemplate restTemplate;
-
-
-    public SellerService(final SellerRepository sellerRepository, final RestTemplate restTemplate) {
+    public SellerService(final SellerRepository sellerRepository, final CoordinatesService coordinatesService) {
         this.sellerRepository = sellerRepository;
-        this.restTemplate = restTemplate;
+        this.coordinatesService = coordinatesService;
     }
 
-    @Cacheable("sellersCache")
     public List<SellerResponse> getSellers() {
-        return sellerRepository.findAll().stream()
-            .map(seller -> {
-                final var sellerResponse = SellerResponse.of(seller);
-                addCoordinatesInAddressOfSellerResponse(sellerResponse);
-                return sellerResponse;
-            })
-            .collect(Collectors.toList());
+        final var sellers = sellerRepository.findAll();
+        final List<SellerResponse> sellerResponses = new ArrayList<>();
+        for (Seller seller : sellers) {
+            final var sellerResponse = SellerResponse.of(seller);
+            addCoordinatesInAddressOfSellerResponse(sellerResponse);
+            sellerResponses.add(sellerResponse);
+        }
+        return sellerResponses;
     }
 
-    private void addCoordinatesInAddressOfSellerResponse(SellerResponse sellerResponse) {
-        ObjectCenter coordinates = getCoordinates(sellerResponse.getAddress());
+    private void addCoordinatesInAddressOfSellerResponse(final SellerResponse sellerResponse) {
+        ObjectCenter coordinates = coordinatesService.getCoordinates(sellerResponse.getAddress());
 
         final var df = new DecimalFormat("#.######");
         final String formattedLat = df.format(coordinates.getLat()).replace(',', '.');
@@ -66,15 +61,9 @@ public class SellerService {
     }
 
     public SellerResponse getSeller(final Long id) {
-        return SellerResponse.of(sellerRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException(String.format("Seller %d does not exist", id))));
-    }
-    @Cacheable("coordinatesCache")
-    public ObjectCenter getCoordinates(String cityName) {
-        final var fullApiUrl = String.format(OPEN_STREET_MAP_URL, cityName);
-
-        return restTemplate
-            .exchange(fullApiUrl, HttpMethod.GET, null, ObjectCenter.class)
-            .getBody();
+        return SellerResponse.of(
+            sellerRepository
+                .findById(id)
+                .orElseThrow(() -> new RuntimeException(String.format("Seller %d does not exist", id))));
     }
 }

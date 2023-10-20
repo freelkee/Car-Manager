@@ -5,18 +5,11 @@ import com.freelkee.carmanager.entity.Car;
 import com.freelkee.carmanager.entity.Seller;
 import com.freelkee.carmanager.repository.SellerRepository;
 import com.freelkee.carmanager.response.CarResponse;
-import com.freelkee.carmanager.response.ObjectCenter;
 import com.freelkee.carmanager.response.SellerResponse;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,10 +31,6 @@ public class SellerControllerTest extends BaseTestContainersTest {
 
     @Autowired
     private SellerRepository sellerRepository;
-
-    @Autowired
-    @MockBean
-    private RestTemplate restTemplate;
 
     @Autowired
     private MockMvc mockMvc;
@@ -93,7 +82,6 @@ public class SellerControllerTest extends BaseTestContainersTest {
             .collect(Collectors.toList());
 
         assertSellers(sortedSellers, sortedSellersResponses);
-
     }
 
     private static void assertSellers(List<Seller> sortedSellers, List<SellerResponse> sortedSellersResponses) {
@@ -101,45 +89,14 @@ public class SellerControllerTest extends BaseTestContainersTest {
         assertEquals(sortedSellers.size(), sortedSellersResponses.size());
 
         for (int i = 0; i < sortedSellers.size(); i++) {
-            assertEquals(sortedSellers.get(i).getId(), sortedSellersResponses.get(i).getId());
-            assertEquals(sortedSellers.get(i).getName(), sortedSellersResponses.get(i).getName());
-            assertAddress(sortedSellers.get(i).getAddress(), sortedSellersResponses.get(i).getAddress());
+            final Seller expected = sortedSellers.get(i);
+            final SellerResponse actual = sortedSellersResponses.get(i);
+
+            assertEquals(expected.getId(), actual.getId());
+            assertEquals(expected.getName(), actual.getName());
+            assertEquals(expected.getAddress(), extractCityName(actual.getAddress()));
         }
     }
-
-    @Test
-    public void testCoordinatesCaching() throws Exception {
-        ObjectCenter expectedObjectCenter = new ObjectCenter(59.926537, 30.26321);
-        final var seller1 = Seller.builder()
-            .name("Small Shop")
-            .address("Санкт-Петербург")
-            .build();
-        sellerRepository.save(seller1);
-
-        Mockito.when(restTemplate.exchange(
-            Mockito.anyString(),
-            Mockito.eq(HttpMethod.GET),
-            Mockito.any(),
-            Mockito.<Class<ObjectCenter>>any())
-        ).thenReturn(new ResponseEntity<>(expectedObjectCenter, HttpStatus.OK));
-
-        mockMvc.perform(get("/seller/"))
-            .andExpect(status().isOk())
-            .andReturn();
-
-        mockMvc.perform(get("/seller/"))
-            .andExpect(status().isOk())
-            .andReturn();
-
-        Mockito.verify(restTemplate, Mockito.times(1)).exchange(
-            Mockito.anyString(),
-            Mockito.eq(HttpMethod.GET),
-            Mockito.any(),
-            Mockito.<Class<ObjectCenter>>any()
-        );
-    }
-
-
 
     @Test
     public void showSeller() throws Exception {
@@ -207,16 +164,12 @@ public class SellerControllerTest extends BaseTestContainersTest {
         assertEquals(seller.getName(), returnedSellerResponse.getName());
     }
 
-    private static void assertAddress(String address, String responseAddress) {
-
-        final Pattern pattern = Pattern.compile("(.+) - ([-+]?[0-3]*\\.?[0-9]+), ([-+]?[0-3]*\\.?[0-9]+)");
+    private static String extractCityName(String responseAddress) {
+        final String regex = "^(\\p{L}+).*";
+        final Pattern pattern = Pattern.compile(regex);
         final Matcher matcher = pattern.matcher(responseAddress);
-
         if (matcher.matches()) {
-
-            final String responseCity = matcher.group(0);
-            assertEquals(address, responseCity);
-
+            return matcher.group(1);
         } else {
             throw new RuntimeException("Could not extract information from the string.");
         }

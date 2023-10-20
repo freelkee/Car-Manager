@@ -42,12 +42,10 @@ public class ObjectCenterDeserializer extends StdDeserializer<ObjectCenter> {
             return new ObjectCenter
                 (
                     coordinatesList.stream()
-                        .map(coordinate -> coordinate[1])
-                        .mapToDouble(Double::doubleValue)
+                        .mapToDouble(coordinate -> coordinate[1])
                         .average().orElse(0.0),
                     coordinatesList.stream()
-                        .map(coordinate -> coordinate[0])
-                        .mapToDouble(Double::doubleValue)
+                        .mapToDouble(coordinate -> coordinate[0])
                         .average().orElse(0.0)
                 );
         } else {

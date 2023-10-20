@@ -1,5 +1,3 @@
-ALTER TABLE sellers ADD address varchar(100);
-
 UPDATE sellers
 SET address = 'Санкт-Петербург'
 WHERE id = 1;
