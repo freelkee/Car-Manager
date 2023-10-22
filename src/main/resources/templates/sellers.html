@@ -12,6 +12,7 @@
   <tr style="background-color: #dddddd;">
     <th style="border: 1px solid #dddddd; padding: 8px; text-align: left;">Id</th>
     <th style="border: 1px solid #dddddd; padding: 8px; text-align: left;">Name</th>
+    <th style="border: 1px solid #dddddd; padding: 8px; text-align: left;">Address</th>
   </tr>
   </thead>
   <tbody>
@@ -22,6 +23,7 @@
       </a>
     </td>
     <td style="border: 1px solid #dddddd; padding: 8px;"> <span th:text="${seller.getName()}"></span></td>
+    <td style="border: 1px solid #dddddd; padding: 8px;"> <span th:text="${seller.getAddress()}"></span></td>
   </tr>
   </tbody>
 </table>

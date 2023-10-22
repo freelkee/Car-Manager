@@ -16,10 +16,13 @@ public class SellerResponse {
 
     private String name;
 
+    private String address;
+
     public static SellerResponse of(final Seller seller) {
         return SellerResponse.builder()
             .id(seller.getId())
             .name(seller.getName())
+            .address(seller.getAddress())
             .build();
     }
 

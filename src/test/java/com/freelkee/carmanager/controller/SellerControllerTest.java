@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -37,10 +39,12 @@ public class SellerControllerTest extends BaseTestContainersTest {
     public void showAllSellers() throws Exception {
         final var seller1 = Seller.builder()
             .name("Big Shop")
+            .address("Уфа")
             .build();
 
         final var seller2 = Seller.builder()
             .name("Small Shop")
+            .address("Северодвинск")
             .build();
 
         final var car1 = Car.builder()
@@ -78,7 +82,6 @@ public class SellerControllerTest extends BaseTestContainersTest {
             .collect(Collectors.toList());
 
         assertSellers(sortedSellers, sortedSellersResponses);
-
     }
 
     private static void assertSellers(List<Seller> sortedSellers, List<SellerResponse> sortedSellersResponses) {
@@ -86,8 +89,12 @@ public class SellerControllerTest extends BaseTestContainersTest {
         assertEquals(sortedSellers.size(), sortedSellersResponses.size());
 
         for (int i = 0; i < sortedSellers.size(); i++) {
-            assertEquals(sortedSellers.get(i).getId(), sortedSellersResponses.get(i).getId());
-            assertEquals(sortedSellers.get(i).getName(), sortedSellersResponses.get(i).getName());
+            final Seller expected = sortedSellers.get(i);
+            final SellerResponse actual = sortedSellersResponses.get(i);
+
+            assertEquals(expected.getId(), actual.getId());
+            assertEquals(expected.getName(), actual.getName());
+            assertEquals(expected.getAddress(), extractCityName(actual.getAddress()));
         }
     }
 
@@ -141,8 +148,8 @@ public class SellerControllerTest extends BaseTestContainersTest {
         assertEquals(sortedCars.size(), sortedCarsResponses.size());
 
         for (int i = 0; i < sortedCars.size(); i++) {
-            var car = sortedCars.get(i);
-            var carResponse = sortedCarsResponses.get(i);
+            final var car = sortedCars.get(i);
+            final var carResponse = sortedCarsResponses.get(i);
 
             assertEquals(car.getId(), carResponse.getId());
             assertEquals(car.getPrice(), carResponse.getPrice());
@@ -155,5 +162,16 @@ public class SellerControllerTest extends BaseTestContainersTest {
 
         assertEquals(seller.getId(), returnedSellerResponse.getId());
         assertEquals(seller.getName(), returnedSellerResponse.getName());
+    }
+
+    private static String extractCityName(String responseAddress) {
+        final String regex = "^(\\p{L}+).*";
+        final Pattern pattern = Pattern.compile(regex);
+        final Matcher matcher = pattern.matcher(responseAddress);
+        if (matcher.matches()) {
+            return matcher.group(1);
+        } else {
+            throw new RuntimeException("Could not extract information from the string.");
+        }
     }
 }

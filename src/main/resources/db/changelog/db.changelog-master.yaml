@@ -1,21 +1,42 @@
 databaseChangeLog:
     - changeSet:
-          id: createTable
+          id: 1-createTable
           author: freelkee
           changes:
               - sqlFile:
                     dbms: postgresql
                     encoding: utf8
-                    path: scripts/schema.sql
+                    path: scripts/v1.0.0/1-schema.sql
                     relativeToChangelogFile: true
 
     - changeSet:
-          id: insertData
+          id: 2-insertData
           author: freelkee
           context: prod
           changes:
               - sqlFile:
                     dbms: postgresql
                     encoding: utf8
-                    path: scripts/data.sql
+                    path: scripts/v1.0.0/2-data.sql
                     relativeToChangelogFile: true
+
+    - changeSet:
+        id: 3-addAddress
+        author: freelkee
+        changes:
+          - sqlFile:
+              dbms: postgresql
+              encoding: utf8
+              path: scripts/v1.1.0/3-add_address.sql
+              relativeToChangelogFile: true
+
+    - changeSet:
+        id: 4-addAddressData
+        author: freelkee
+        context: prod
+        changes:
+          - sqlFile:
+              dbms: postgresql
+              encoding: utf8
+              path: scripts/v1.1.0/4-add_address_data.sql
+              relativeToChangelogFile: true
